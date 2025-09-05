@@ -1,7 +1,8 @@
 <?php
 
-use App\Facades\ApiResponse;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Auth;
+use App\Http\Controllers\Api\Error;
+use App\Http\Controllers\Api\RootController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,8 @@ use Illuminate\Support\Facades\Route;
 | Remember not to list anything of importance, use authenticate route instead.
 */
 
-Route::get('/ping', function () {
-    return ApiResponse::success('Server service is working', 'Pong');
-});
+Route::any('/', RootController::class)->name('root');
+Route::get('/access-denied', Error\AccessDeniedController::class)->name('access.denied');
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +28,8 @@ Route::get('/ping', function () {
 | Remember not to list anything of importance, use authenticate route instead.
 */
 
-Route::middleware('guest:sanctum')->group(function () {
-    Route::get('/login', function () {
-        return ApiResponse::success(null, 'Login endpoint is working');
-    })->name('login');
-
-    Route::get('/register',function () {
-        return ApiResponse::success(null, 'Register endpoint is working');
-    })->name('register');
+Route::middleware('guest:api')->group(function () {
+    Route::post('/login', Auth\LoginController::class)->name('login');
 });
 
 /*
@@ -48,13 +42,6 @@ Route::middleware('guest:sanctum')->group(function () {
 | user who had obtained their access through the login process.
 */
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', function (Request $request) {
-        $request->user()->currentAccessToken()->delete();
-        return ApiResponse::success(null, 'Successfully logged out');
-    })->name('logout');
-
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->name('user');
+Route::middleware('auth:api')->group(function () {
+    Route::post('/logout', Auth\LogoutController::class)->name('logout');
 });
