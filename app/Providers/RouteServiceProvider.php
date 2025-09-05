@@ -28,7 +28,7 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         RateLimiter::for('api', function ($request) {
-            $identifier = auth('sanctum')->check() ? auth('sanctum')->id() : $request->ip();
+            $identifier = auth('api')->check() ? auth('api')->id() : $request->ip();
             return Limit::perMinute(60)->by($identifier)
                 ->response(function (Request $request, array $headers) {
                     return ApiResponse::error('Too Many Attempts.', 429, [

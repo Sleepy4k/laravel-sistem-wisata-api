@@ -8,11 +8,12 @@ use ElipZis\Cacheable\Models\Traits\Cacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasUuid, Notifiable, HasRoles, Loggable, Cacheable;
+    use HasFactory, HasUuid, Notifiable, HasRoles, Loggable, Cacheable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
