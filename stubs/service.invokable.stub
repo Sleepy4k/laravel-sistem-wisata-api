@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Foundations\Service;
+
+class {{ class }} extends Service
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function invoke(): void
+    {
+        //
+    }
+}

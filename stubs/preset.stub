@@ -1,0 +1,23 @@
+<?php
+
+namespace {{ namespace }};;
+
+use Spatie\Csp\Directive;
+use Spatie\Csp\Keyword;
+use Spatie\Csp\Policy;
+use Spatie\Csp\Preset;
+use Spatie\Csp\Scheme;
+use Spatie\Csp\Value;
+
+class {{ class }} implements Preset
+{
+    /**
+     * Configure csp policies for general and other policy
+     *
+     * @return void
+     */
+    public function configure(Policy $policy): void
+    {
+        //
+    }
+}
