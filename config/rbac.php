@@ -3,10 +3,6 @@
 return [
     /* Configurations for application */
     'role' => [
-        // Default role assigned to users when they are created
-        // This should match the default role in your RBAC configuration
-        'default' => 'pokdarwis',
-
         // Highest role in the hierarchy, typically for administrators
         // This should match the highest role in your RBAC configuration
         // It is used to determine the highest level of access in the system
@@ -22,7 +18,11 @@ return [
             'bpd'
         ],
         'permissions' => [
+            'view.pokdarwis.report',
+            'view.bumdes.report',
 
+            'manage.pokdarwis.business',
+            'manage.bumdes.business',
         ],
     ],
 
@@ -30,13 +30,20 @@ return [
     'permissions' => [
         'admin' => 'all',
         'pokdarwis' => [
-            // Define specific permissions for the 'pokdarwis' role here
+            'view.pokdarwis.report',
+            'manage.pokdarwis.business',
         ],
         'bumdes' => [
-            // Define specific permissions for the 'bumdes' role here
+            'view.pokdarwis.report',
+            'view.bumdes.report',
+            'manage.pokdarwis.business',
+            'manage.bumdes.business',
         ],
         'bpd' => [
-            // Define specific permissions for the 'bpd' role here
+            'view.pokdarwis.report',
+            'view.bumdes.report',
+            'manage.pokdarwis.business',
+            'manage.bumdes.business',
         ],
     ],
 ];
