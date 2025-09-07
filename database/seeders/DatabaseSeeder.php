@@ -23,6 +23,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
+            BusinessSeeder::class,
+            BusinessFieldSeeder::class,
+            SidebarMetaSeeder::class,
+            SidebarSeeder::class,
         ], $isMustSilent);
     }
 }
