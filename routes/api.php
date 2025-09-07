@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth;
+use App\Http\Controllers\Api\Dashboard;
 use App\Http\Controllers\Api\Error;
 use App\Http\Controllers\Api\RootController;
 use Illuminate\Support\Facades\Route;
@@ -44,4 +45,25 @@ Route::middleware('guest:api')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', Auth\LogoutController::class)->name('logout');
+
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::get('/sidebar', Dashboard\SidebarController::class)->name('sidebar');
+        Route::get('/system-information', Dashboard\SystemInformationController::class)->name('system.information');
+
+        Route::controller(Dashboard\ProfileController::class)->group(function () {
+            Route::get('/profile/detail', 'index')->name('profile.index');
+            Route::get('/profile', 'show')->name('profile.show');
+            Route::post('/profile', 'update')->name('profile.update');
+        });
+
+        Route::prefix('{role}')->name('role.')->group(function () {
+            Route::controller(Dashboard\SectionController::class)->prefix('{business:slug}')->name('section.')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{transaction}', 'show')->name('show');
+                Route::put('/{transaction}', 'update')->name('update');
+                Route::delete('/{transaction}', 'destroy')->name('destroy');
+            });
+        });
+    });
 });
