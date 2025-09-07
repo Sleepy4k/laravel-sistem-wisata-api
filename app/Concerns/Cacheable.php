@@ -2,11 +2,11 @@
 
 namespace App\Concerns;
 
-use ElipZis\Cacheable\Models\Traits\Cacheable;
+use ElipZis\Cacheable\Models\Traits\Cacheable as CacheableTrait;
 
-trait MakeCacheable
+trait Cacheable
 {
-    use Cacheable;
+    use CacheableTrait;
 
     /**
      * The cache prefix.

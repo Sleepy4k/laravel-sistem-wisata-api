@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Concerns\Cacheable;
 use App\Concerns\HasUuid;
 use App\Concerns\Loggable;
-use ElipZis\Cacheable\Models\Traits\Cacheable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -57,5 +58,21 @@ class User extends Authenticatable
      */
     public function setCachePrefix(): string {
         return 'user.cache';
+    }
+
+    /**
+     * Get the transactions for the user.
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get the activity logs for the user.
+     */
+    public function logs()
+    {
+        return $this->hasMany(Activity::class, 'causer_id', 'id')->where('causer_type', self::class);
     }
 }

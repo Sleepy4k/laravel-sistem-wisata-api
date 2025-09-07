@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Auth;
+namespace App\Http\Resources\Profile;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LoginResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -29,6 +29,8 @@ class LoginResource extends JsonResource
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'role' => $role,
             'permissions' => $permissions,
+            'logs' => $this->whenLoaded('logs'),
+            'transactions' => $this->whenLoaded('transactions'),
         ];
     }
 }

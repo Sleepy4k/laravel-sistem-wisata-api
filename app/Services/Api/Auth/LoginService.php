@@ -4,7 +4,7 @@ namespace App\Services\Api\Auth;
 
 use App\Facades\ApiResponse;
 use App\Foundations\Service;
-use App\Http\Resources\Auth\LoginResource;
+use App\Http\Resources\Profile\UserBasicResource;
 use App\Models\User;
 
 class LoginService extends Service
@@ -36,7 +36,7 @@ class LoginService extends Service
         return ApiResponse::success([
             'token_type' => 'Bearer',
             'access_token' => $token,
-            'user' => new LoginResource($user),
+            'user' => new UserBasicResource($user),
         ], 'Login successful', 200);
     }
 }
