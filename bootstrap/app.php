@@ -32,7 +32,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return match (true) {
                 $exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException,
                 $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException =>
-                    ApiResponse::error('Resource not found', 404),
+                    ApiResponse::error('Resource not found', 404, [
+                        'url' => $request->fullUrl(),
+                        'method' => $request->method(),
+                        'message' => $exception->getMessage(),
+                    ]),
 
                 $exception instanceof \Illuminate\Auth\Access\AuthorizationException =>
                     ApiResponse::error('Unauthorized', 403),
