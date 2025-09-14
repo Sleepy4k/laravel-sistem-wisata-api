@@ -23,6 +23,18 @@ class PermissionSeeder extends Seeder
             throw new \Exception('Error: config/rbac.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
         }
 
+        $dynamicPermissions = config('rbac.list.dynamic_permissions', []);
+
+        foreach ($dynamicPermissions as $entity => $actions) {
+            foreach ($actions as $action) {
+                $permissions[] = "{$entity}.{$action}.viewAny";
+                $permissions[] = "{$entity}.{$action}.store";
+                $permissions[] = "{$entity}.{$action}.view";
+                $permissions[] = "{$entity}.{$action}.update";
+                $permissions[] = "{$entity}.{$action}.delete";
+            }
+        }
+
         $time = now();
 
         $permission = collect($permissions)->map(function ($name) use ($time) {

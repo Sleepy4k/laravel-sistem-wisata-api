@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
@@ -30,10 +31,23 @@ class RoleSeeder extends Seeder
             $roleData['created_at'] = $time;
             $roleData['updated_at'] = $time;
 
-            $rolePermissions = config('rbac.permissions.' . $roleData['name'], []);
+            $roleName = $roleData['name'];
+            $rolePermissions = config('rbac.permissions.' . $roleName, []);
 
             if (is_string($rolePermissions) && in_array(strtolower($rolePermissions), ['*', 'all'])) {
-                $rolePermissions = config('rbac.list.permissions', []);
+                $rolePermissions = Permission::pluck('name')->toArray();
+                Role::create($roleData)->syncPermissions($rolePermissions);
+                continue;
+            }
+
+            $dynamicPermissions = config('rbac.list.dynamic_permissions.' . $roleName, []);
+
+            foreach ($dynamicPermissions as $action) {
+                $rolePermissions[] = "{$roleName}.{$action}.viewAny";
+                $rolePermissions[] = "{$roleName}.{$action}.store";
+                $rolePermissions[] = "{$roleName}.{$action}.view";
+                $rolePermissions[] = "{$roleName}.{$action}.update";
+                $rolePermissions[] = "{$roleName}.{$action}.delete";
             }
 
             Role::create($roleData)->syncPermissions($rolePermissions);
