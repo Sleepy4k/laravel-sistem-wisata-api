@@ -57,12 +57,19 @@ Route::middleware('auth:api')->group(function () {
         });
 
         Route::prefix('{role}')->name('role.')->group(function () {
-            Route::controller(Dashboard\SectionController::class)->prefix('{business:slug}')->name('section.')->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::post('/', 'store')->name('store');
-                Route::get('/{transaction}', 'show')->name('show');
-                Route::put('/{transaction}', 'update')->name('update');
-                Route::delete('/{transaction}', 'destroy')->name('destroy');
+            Route::prefix('{business:slug}')->name('section.')->group(function () {
+                Route::controller(Dashboard\SectionMiscController::class)->group(function () {
+                    Route::get('/columns', 'columns')->name('misc.columns');
+                    Route::get('/fields', 'fields')->name('misc.fields');
+                });
+
+                Route::controller(Dashboard\SectionController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::post('/', 'store')->name('store');
+                    Route::get('/{transaction}', 'show')->name('show');
+                    Route::put('/{transaction}', 'update')->name('update');
+                    Route::delete('/{transaction}', 'destroy')->name('destroy');
+                });
             });
         });
     });
