@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\API;
+namespace Modules\Api;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -65,6 +65,11 @@ class ApiResponseManager
             ],
             'meta' => $this->getMeta()
         ]);
+    }
+
+    public function custom(mixed $data, int $statusCode = 200)
+    {
+        return response()->json($data, $statusCode);
     }
 
     /**
