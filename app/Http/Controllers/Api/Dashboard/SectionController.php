@@ -7,15 +7,27 @@ use App\Http\Requests\Dashboard\Section\StoreRequest;
 use App\Http\Requests\Dashboard\Section\UpdateRequest;
 use App\Models\Business;
 use App\Models\Transaction;
+use App\Policies\SectionPolicy;
 use App\Services\Api\Dashboard\SectionService;
+use App\Traits\Authorizable;
 
 class SectionController extends Controller
 {
+    use Authorizable;
+
     /**
      * Create a new controller instance.
      */
     public function __construct(
         private SectionService $service,
+        private $policy = SectionPolicy::class,
+        private $abilities = [
+            'index' => 'viewAny',
+            'store' => 'store',
+            'show' => 'view',
+            'update' => 'update',
+            'destroy' => 'delete',
+        ]
     ) {}
 
     /**

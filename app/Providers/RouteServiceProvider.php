@@ -33,6 +33,8 @@ class RouteServiceProvider extends ServiceProvider
         $highestRole = config('rbac.role.highest');
         Route::pattern('role', implode('|', array_filter($roles, fn ($role) => $role !== $highestRole)));
 
+        Route::pattern('business', '[a-z0-9-]+');
+
         RateLimiter::for('api', function ($request) {
             $identifier = auth('api')->check() ? auth('api')->id() : $request->ip();
             return Limit::perMinute(60)->by($identifier)

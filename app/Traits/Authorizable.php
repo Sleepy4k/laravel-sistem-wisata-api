@@ -25,6 +25,7 @@ trait Authorizable
             return ApiResponse::error('You do not have permission to perform this action.', 403, [
                 'url' => request()->fullUrl(),
                 'method' => request()->method(),
+                'message' => "User lacks the required ability: {$ability}",
             ]);
         }
 

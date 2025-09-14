@@ -5,7 +5,6 @@ namespace App\Services\Api\Dashboard;
 use App\Enums\TransactionType;
 use App\Facades\ApiResponse;
 use App\Foundations\Service;
-use App\Http\Resources\Dashboard\BusinessResource;
 use App\Http\Resources\Dashboard\BusinessTransactionResource;
 use App\Models\Business;
 use App\Models\Transaction;
@@ -20,7 +19,54 @@ class SectionService extends Service
     {
         $business->load('fields', 'transactions', 'transactions.detail', 'transactions.user');
 
-        return ApiResponse::success(new BusinessResource($business), 'Sections retrieved successfully.', 200);
+        $size = request()->input('length', 10);
+        $start = request()->input('start', 0);
+        $orderInput = request()->input('order', []);
+        $columnsInput = request()->input('columns', []);
+        $order = !empty($orderInput) && isset($columnsInput[$orderInput[0]['column']]['data'])
+            ? $columnsInput[$orderInput[0]['column']]['data']
+            : 'id';
+        $direction = !empty($orderInput) && isset($orderInput[0]['dir'])
+            ? $orderInput[0]['dir']
+            : 'asc';
+        $searchInput = request()->input('search', []);
+        $search = isset($searchInput['value']) ? $searchInput['value'] : null;
+
+        $query = $business->transactions();
+
+        if ($search) {
+            $query
+                ->where(function ($q) use ($search) {
+                    $q->where('note', 'like', "%{$search}%")
+                        ->orWhere('amount', 'like', "%{$search}%")
+                        ->orWhereHas('detail', function ($userQuery) use ($search) {
+                            $userQuery->whereRaw("detail LIKE ?", ["%{$search}%"]);
+                        });
+                })
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+        }
+
+        $totalFiltered = $query->count();
+
+        $column = !in_array($order, ['id', 'note', 'amount', 'created_at', 'updated_at']) ? 'detail' : $order;
+        $transactions = $query->orderBy($column, $direction)
+            ->skip($start)
+            ->take($size)
+            ->get();
+
+        $totalRecords = $business->transactions()->count();
+
+        $data = BusinessTransactionResource::collection($transactions);
+
+        return ApiResponse::custom([
+            'data' => $data,
+            'draw' => intval(request()->input('draw')),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalFiltered,
+        ], 200);
     }
 
     /**

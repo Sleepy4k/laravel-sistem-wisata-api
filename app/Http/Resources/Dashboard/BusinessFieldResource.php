@@ -17,6 +17,7 @@ class BusinessFieldResource extends JsonResource
         return [
             'order' => $this->order,
             'name' => $this->name,
+            'label' => $this->label,
             'type' => $this->type,
             'placeholder' => $this->placeholder,
             'options' => $this->when($this->type === 'select', fn () => $this->options),

@@ -15,12 +15,27 @@ class BusinessTransactionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $isDetailLoaded = $this->whenLoaded('detail');
+        $detail = $isDetailLoaded ? json_decode($this->detail->detail, true) : null;
+
+        $result = [
             'id' => $this->id,
             'type' => $this->type,
             'transaction_date' => $this->transaction_date,
-            'detail' => new BusinessTransactionDetailResource($this->whenLoaded('detail')),
             'user' => new UserBasicResource($this->whenLoaded('user'))
         ];
+
+        if ($isDetailLoaded) {
+            $result['amount'] = $this->detail->amount;
+            $result['note'] = $this->detail->note;
+        }
+
+        if ($detail && is_array($detail)) {
+            foreach ($detail as $key => $value) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 }
