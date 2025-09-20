@@ -26,6 +26,7 @@ class SidebarMetaFactory extends Factory
 
         $data = [
             [
+                'parameters'    => ['role' => 'pokdarwis'],
                 'permissions'   => [
                     'pokdarwis.tourist_ticket.viewAny',
                     'pokdarwis.river_tubing.viewAny',
@@ -36,19 +37,19 @@ class SidebarMetaFactory extends Factory
                 ],
             ],
             [
-                'icon'          => 'box',
+                'icon'          => 'ticket',
                 'route'         => 'dashboard.role.section.index',
                 'permissions'   => ['pokdarwis.tourist_ticket.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('Tiket Wisata') ?? 'tiket-wisata'],
             ],
             [
-                'icon'          => 'activity',
+                'icon'          => 'water',
                 'route'         => 'dashboard.role.section.index',
                 'permissions'   => ['pokdarwis.river_tubing.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('River Tubing') ?? 'river-tubing'],
             ],
             [
-                'icon'          => 'shopping-bag',
+                'icon'          => 'store',
                 'route'         => 'dashboard.role.section.index',
                 'permissions'   => ['pokdarwis.stall_rental.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('Sewa Warung') ?? 'sewa-warung'],
@@ -67,9 +68,12 @@ class SidebarMetaFactory extends Factory
             ],
             [
                 'icon'          => 'plus-circle',
+                'route'         => 'dashboard.role.business.store',
                 'permissions'   => ['manage.pokdarwis.business'],
+                'parameters'    => ['role' => 'pokdarwis'],
             ],
             [
+                'parameters'    => ['role' => 'bumdes'],
                 'permissions'   => [
                     'bumdes.restaurant_rental.viewAny',
                     'bumdes.internet_rental.viewAny',
@@ -77,7 +81,7 @@ class SidebarMetaFactory extends Factory
                 ],
             ],
             [
-                'icon'          => 'coffee',
+                'icon'          => 'utensils',
                 'route'         => 'dashboard.role.section.index',
                 'permissions'   => ['bumdes.rent_restaurant.viewAny'],
                 'parameters'    => ['role' => 'bumdes', 'business' => $findSlug('Sewa Resto') ?? 'sewa-resto'],
@@ -90,7 +94,9 @@ class SidebarMetaFactory extends Factory
             ],
             [
                 'icon'          => 'plus-circle',
+                'route'         => 'dashboard.role.business.store',
                 'permissions'   => ['manage.bumdes.business'],
+                'parameters'    => ['role' => 'bumdes'],
             ],
         ];
 

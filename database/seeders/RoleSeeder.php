@@ -40,14 +40,13 @@ class RoleSeeder extends Seeder
                 continue;
             }
 
+            $crudPermissions = config('rbac.list.crud_permissions', []);
             $dynamicPermissions = config('rbac.list.dynamic_permissions.' . $roleName, []);
 
             foreach ($dynamicPermissions as $action) {
-                $rolePermissions[] = "{$roleName}.{$action}.viewAny";
-                $rolePermissions[] = "{$roleName}.{$action}.store";
-                $rolePermissions[] = "{$roleName}.{$action}.view";
-                $rolePermissions[] = "{$roleName}.{$action}.update";
-                $rolePermissions[] = "{$roleName}.{$action}.delete";
+                foreach ($crudPermissions as $ability) {
+                    $rolePermissions[] = "{$roleName}.{$action}.{$ability}";
+                }
             }
 
             Role::create($roleData)->syncPermissions($rolePermissions);

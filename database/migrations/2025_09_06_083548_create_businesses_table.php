@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 100);
-            $table->string('slug', 100)->unique();
+            $table->string('name', 30);
+            $table->string('slug', 30)->unique();
             $table->boolean('is_active')->nullable()->default(true);
             $table->timestamps();
         });
