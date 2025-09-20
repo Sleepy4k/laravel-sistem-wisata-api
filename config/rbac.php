@@ -7,6 +7,10 @@ return [
         // This should match the highest role in your RBAC configuration
         // It is used to determine the highest level of access in the system
         'highest' => 'admin',
+
+        // Default role assigned to new users or entities
+        // This role should have the most basic permissions
+        'default' => 'pokdarwis',
     ],
 
     /* List of roles and permissions */
@@ -31,12 +35,19 @@ return [
                 'river-tubing',
                 'sewa-warung',
                 'sewa-umkm',
-                'pakan-ikan ',
+                'pakan-ikan',
             ],
             'bumdes' => [
                 'sewa-resto',
                 'sewa-internet',
             ],
+        ],
+        'crud_permissions' => [
+            'viewAny',
+            'view',
+            'store',
+            'update',
+            'delete',
         ],
     ],
 
