@@ -31,11 +31,13 @@ class LoginService extends Service
         $user->load('roles:id,name', 'roles.permissions:id,name', 'permissions:id,name');
         $user->tokens()->delete();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $expiration = now()->addDay();
+        $token = $user->createToken('auth_token', ['*'], $expiration)->plainTextToken;
 
         return ApiResponse::success([
             'token_type' => 'Bearer',
             'access_token' => $token,
+            'expires_at' => $expiration->toDateTimeString(),
             'user' => new UserBasicResource($user),
         ], 'Login successful', 200);
     }

@@ -20,7 +20,7 @@ class SectionMiscController extends Controller
         private SectionMiscService $service,
         private $policy = SectionMiscPolicy::class,
         private $abilities = [
-            'export' => 'export',
+            'columns' => 'viewColumns',
             'fields' => 'viewFields',
         ]
     ) {}

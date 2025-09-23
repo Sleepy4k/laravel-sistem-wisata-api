@@ -33,9 +33,9 @@ class Transaction extends Model
         return [
             'id' => 'string',
             'business_id' => 'string',
-            'transaction_date' => 'date',
+            'transaction_date' => 'date:Y-m-d',
             'type' => 'string',
-            'user_id' => 'integer',
+            'user_id' => 'string',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

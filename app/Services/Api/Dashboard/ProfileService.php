@@ -14,11 +14,23 @@ class ProfileService extends Service
     public function index(): mixed
     {
         $user = auth('api')->user();
-        $user->load('roles:id,name', 'roles.permissions:id,name', 'permissions:id,name');
-        $user->load('logs', 'transactions:business_id,user_id,transaction_date,type', 'transactions.business:id,name');
-        $user = new UserResource($user);
+        $user->load([
+            'roles:id,name',
+            'roles.permissions:id,name',
+            'permissions:id,name',
+            'logs' => fn($query) => $query->select('log_name', 'description', 'subject_type', 'event', 'subject_id', 'causer_type', 'causer_id', 'created_at')
+            ->latest()
+            ->limit(5)
+        ]);
 
-        return $user;
+        $user->setRelation('transactions',
+            $user->transactions()
+            ->select('id', 'business_id', 'user_id', 'transaction_date', 'type')
+            ->with('business:id,name,slug')
+            ->paginate(10)
+        );
+
+        return new UserResource($user);
     }
 
     /**
@@ -48,6 +60,10 @@ class ProfileService extends Service
         }
 
         if (isset($request['password'])) {
+            if (!isset($request['old_password']) || !password_verify($request['old_password'], $user->password)) {
+                return false;
+            }
+
             $user->password = $request['password'];
         }
 

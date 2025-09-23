@@ -21,7 +21,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return ApiResponse::success($this->service->index(), 'Successfully retrieved dsetail profile data.', 200);
+        return ApiResponse::success($this->service->index(), 'Successfully retrieved detail profile data.', 200);
     }
 
     /**
