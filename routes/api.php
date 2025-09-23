@@ -57,7 +57,11 @@ Route::middleware('auth:api')->group(function () {
         });
 
         Route::prefix('{role}')->name('role.')->group(function () {
-            Route::prefix('/section/{business:slug}')->name('section.')->group(function () {
+            Route::resource('/business', Dashboard\BusinessController::class)
+                ->only(['store', 'update', 'destroy'])
+                ->parameter('business', 'business:slug');
+
+            Route::prefix('/{business:slug}')->name('section.')->group(function () {
                 Route::controller(Dashboard\SectionMiscController::class)->group(function () {
                     Route::get('/columns', 'columns')->name('misc.columns');
                     Route::get('/fields', 'fields')->name('misc.fields');
@@ -71,10 +75,6 @@ Route::middleware('auth:api')->group(function () {
                     Route::delete('/{transaction}', 'destroy')->name('destroy');
                 });
             });
-
-            Route::resource('/business', Dashboard\BusinessController::class)
-                ->only(['store', 'update', 'destroy'])
-                ->parameter('business', 'business:slug');
         });
     });
 });
