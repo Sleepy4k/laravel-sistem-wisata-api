@@ -65,6 +65,7 @@ Route::middleware('auth:api')->group(function () {
                 Route::controller(Dashboard\SectionMiscController::class)->group(function () {
                     Route::get('/columns', 'columns')->name('misc.columns');
                     Route::get('/fields', 'fields')->name('misc.fields');
+                    Route::get('/cards', 'cards')->name('misc.cards');
                 });
 
                 Route::controller(Dashboard\SectionController::class)->group(function () {
