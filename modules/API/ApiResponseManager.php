@@ -83,7 +83,6 @@ class ApiResponseManager
             'timestamp' => date('d-m-Y H:i:s'),
             'version' => config('app.version', '1.0.0'),
             'environment' => config('app.env'),
-            'request_id' => request()->header('X-Request-ID', uniqid())
         ];
     }
 }
