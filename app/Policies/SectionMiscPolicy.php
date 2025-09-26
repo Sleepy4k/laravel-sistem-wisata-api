@@ -23,4 +23,12 @@ class SectionMiscPolicy
         $prefix = "{$role}.{$business->slug}";
         return $user->can("{$prefix}.store") || $user->can("{$prefix}.update");
     }
+
+    /**
+     * Determine whether the user can view cards.
+     */
+    public function viewCards(User $user, string $role, Business $business): bool
+    {
+        return $user->can("{$role}.{$business->slug}.viewAny");
+    }
 }

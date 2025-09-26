@@ -62,6 +62,7 @@ class Business extends Model
      */
     public function fields()
     {
-        return $this->hasMany(BusinessField::class, 'business_id', 'id');
+        return $this->hasMany(BusinessField::class, 'business_id', 'id')
+            ->orderBy('order', 'asc');
     }
 }

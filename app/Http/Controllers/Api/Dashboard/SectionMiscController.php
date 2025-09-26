@@ -22,6 +22,7 @@ class SectionMiscController extends Controller
         private $abilities = [
             'columns' => 'viewColumns',
             'fields' => 'viewFields',
+            'cards' => 'viewCards',
         ]
     ) {}
 
@@ -43,5 +44,15 @@ class SectionMiscController extends Controller
         $data = $this->service->fields($role, $business);
 
         return ApiResponse::success($data, 'Fields retrieved successfully.', 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function cards(string $role, Business $business)
+    {
+        $data = $this->service->cards($role, $business);
+
+        return ApiResponse::success($data, 'Cards retrieved successfully.', 200);
     }
 }

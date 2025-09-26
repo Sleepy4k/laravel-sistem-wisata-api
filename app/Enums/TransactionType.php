@@ -10,5 +10,5 @@ enum TransactionType: string
 
     // Case section started
     case INCOME = 'income';
-    case EXPENSE = 'expense';
+    case EXPENSE = 'outcome';
 }

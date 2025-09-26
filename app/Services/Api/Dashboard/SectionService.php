@@ -32,7 +32,23 @@ class SectionService extends Service
         $searchInput = request()->input('search', []);
         $search = isset($searchInput['value']) ? $searchInput['value'] : null;
 
+        $date_from = request()->input('date_from', null);
+        $date_to = request()->input('date_to', null);
+        $type = request()->input('type', null);
+
         $query = $business->transactions();
+
+        if ($date_from) {
+            $query->whereDate('transaction_date', '>=', $date_from);
+        }
+
+        if ($date_to) {
+            $query->whereDate('transaction_date', '<=', $date_to);
+        }
+
+        if ($type && in_array($type, [TransactionType::INCOME->value, TransactionType::EXPENSE->value])) {
+            $query->where('type', $type);
+        }
 
         if ($search) {
             $query
@@ -76,7 +92,7 @@ class SectionService extends Service
     {
         $transaction = Transaction::create([
             'business_id' => $business->id,
-            'type' => TransactionType::INCOME->value,
+            'type' => $request['type'] ?? TransactionType::INCOME->value,
             'transaction_date' => date('Y-m-d'),
             'user_id' => auth('api')->id(),
         ]);
@@ -92,7 +108,9 @@ class SectionService extends Service
             'detail' => json_encode($request),
         ]);
 
-        return ApiResponse::success(new BusinessTransactionResource($transaction->load('detail', 'user')), 'Section created successfully.', 201);
+        $response = new BusinessTransactionResource($transaction->load('detail', 'user'));
+
+        return ApiResponse::success($response, 'Section created successfully.', 201);
     }
 
     /**
@@ -104,7 +122,9 @@ class SectionService extends Service
             return ApiResponse::error('Transaction not found in this business.', 404);
         }
 
-        return ApiResponse::success(new BusinessTransactionResource($transaction->load('detail', 'user')), 'Section retrieved successfully.', 200);
+        $response = new BusinessTransactionResource($transaction->load('detail', 'user'));
+
+        return ApiResponse::success($response, 'Section retrieved successfully.', 200);
     }
 
     /**
@@ -135,7 +155,9 @@ class SectionService extends Service
             ]);
         }
 
-        return ApiResponse::success(new BusinessTransactionResource($transaction->load('detail', 'user')), 'Section updated successfully.', 200);
+        $response = new BusinessTransactionResource($transaction->load('detail', 'user'));
+
+        return ApiResponse::success($response, 'Section updated successfully.', 200);
     }
 
     /**

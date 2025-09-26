@@ -21,8 +21,10 @@ class BusinessTransactionResource extends JsonResource
         $result = [
             'id' => $this->id,
             'type' => $this->type,
-            'transaction_date' => $this->transaction_date,
-            'user' => new UserBasicResource($this->whenLoaded('user'))
+            'transaction_date' => $this->transaction_date->format('d-m-Y'),
+            'user' => new UserBasicResource($this->whenLoaded('user')),
+            'created_at' => $this->created_at->format('d-m-Y H:i:s'),
+            'updated_at' => $this->updated_at->format('d-m-Y H:i:s'),
         ];
 
         if ($isDetailLoaded) {

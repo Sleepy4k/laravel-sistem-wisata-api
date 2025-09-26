@@ -24,14 +24,17 @@ class SectionMiscService extends Service
             ];
         });
 
-        $defaultColumns = [
+        $columns = array_merge([
             [
                 'data' => 'id',
                 'name' => 'id',
                 'title' => 'ID',
                 'orderable' => true,
                 'searchable' => true,
-            ],
+            ]
+        ], $fields->toArray());
+
+        return array_merge($columns, [
             [
                 'data' => 'created_at',
                 'name' => 'created_at',
@@ -45,10 +48,8 @@ class SectionMiscService extends Service
                 'title' => 'Updated At',
                 'orderable' => true,
                 'searchable' => false,
-            ],
-        ];
-
-        return array_merge($defaultColumns, $fields->toArray());
+            ]
+        ]);
     }
 
     /**
@@ -59,5 +60,46 @@ class SectionMiscService extends Service
         $business->load('fields');
 
         return BusinessFieldResource::collection($business->fields);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function cards(string $role, $business): mixed
+    {
+        $currentTime = now();
+        $startOfMonth = $currentTime->copy()->startOfMonth();
+        $endOfMonth = $currentTime->copy()->endOfMonth();
+        $business->load('transactions');
+        $transactions = $business->transactions->load('detail');
+
+        $income = $transactions->where('type', 'income')->sum('detail.amount');
+        $outcome = $transactions->where('type', 'outcome')->sum('detail.amount');
+        $currentMonthTransactions = $transactions->filter(function ($transaction) use ($startOfMonth, $endOfMonth) {
+            return $transaction->created_at->between($startOfMonth, $endOfMonth);
+        });
+
+        return [
+            [
+                'name' => 'total-transactions',
+                'value' => $transactions->count(),
+            ],
+            [
+                'name' => 'transactions-this-month',
+                'value' => $currentMonthTransactions->count(),
+            ],
+            [
+                'name' => 'total-income',
+                'value' => $income,
+            ],
+            [
+                'name' => 'total-outcome',
+                'value' => $outcome,
+            ],
+            [
+                'name' => 'net-balance',
+                'value' => $income - $outcome,
+            ],
+        ];
     }
 }

@@ -31,7 +31,11 @@ class UpdateRequest extends FormRequest
             switch ($field->type) {
             case 'select':
                 $options = is_array($field->options) ? $field->options : [];
-                $rules[$field->name] .= '|in:' . implode(',', $options);
+                if (is_array($rules[$field->name]) && !in_array('in:' . implode(',', $options), $rules[$field->name])) {
+                    $rules[$field->name][] = 'in:' . implode(',', $options);
+                } elseif (is_string($rules[$field->name]) && strpos($rules[$field->name], 'in:') === false) {
+                    $rules[$field->name] .= '|in:' . implode(',', $options);
+                }
                 break;
             default:
                 break;
