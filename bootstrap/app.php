@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->throttleApi();
         $middleware->append([
             \Spatie\Csp\AddCspHeaders::class,
+            \App\Http\Middleware\AddRequestIDHeaderRequest::class,
             \App\Http\Middleware\AddSecureHeaderRequest::class,
         ]);
         $middleware->alias([
