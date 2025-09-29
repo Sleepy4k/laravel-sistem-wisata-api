@@ -36,7 +36,7 @@ class SectionService extends Service
         $date_to = request()->input('date_to', null);
         $type = request()->input('type', null);
 
-        $query = $business->transactions();
+        $query = $business->transactions()->with('detail', 'user');
 
         if ($date_from) {
             $query->whereDate('transaction_date', '>=', $date_from);
@@ -51,18 +51,17 @@ class SectionService extends Service
         }
 
         if ($search) {
-            $query
-                ->where(function ($q) use ($search) {
-                    $q->where('note', 'like', "%{$search}%")
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('detail', function ($detailQuery) use ($search) {
+                    $detailQuery->where('note', 'like', "%{$search}%")
                         ->orWhere('amount', 'like', "%{$search}%")
-                        ->orWhereHas('detail', function ($userQuery) use ($search) {
-                            $userQuery->whereRaw("detail LIKE ?", ["%{$search}%"]);
-                        });
+                        ->orWhereRaw("detail LIKE ?", ["%{$search}%"]);
                 })
                 ->orWhereHas('user', function ($userQuery) use ($search) {
                     $userQuery->where('name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
+            });
         }
 
         $totalFiltered = $query->count();

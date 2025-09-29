@@ -54,18 +54,10 @@ class BusinessService extends Service
                 $permissions[] = $permission->id;
             }
 
-            // assign permission to role
-            if ($role === config('rbac.role.default')) {
-                $roleModel = Role::where('name', $role)->first();
-                if ($roleModel) {
-                    $roleModel->permissions()->syncWithoutDetaching($permissions);
-                }
-            } else {
-                // assign permission to all roles except pemdes
-                $roles = Role::where('name', '!=', 'pemdes')->get();
-                foreach ($roles as $roleModel) {
-                    $roleModel->permissions()->syncWithoutDetaching($permissions);
-                }
+            // assign permission to all roles except pemdes
+            $roles = Role::where('name', '!=', 'pemdes')->get();
+            foreach ($roles as $roleModel) {
+                $roleModel->permissions()->syncWithoutDetaching($permissions);
             }
 
             //create sidebar meta
