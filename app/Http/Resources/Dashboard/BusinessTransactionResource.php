@@ -28,7 +28,7 @@ class BusinessTransactionResource extends JsonResource
         ];
 
         if ($isDetailLoaded) {
-            $result['amount'] = $this->detail->amount;
+            $result['amount'] = 'Rp.' . number_format($this->detail->amount, 2, ',', '.');
             $result['note'] = $this->detail->note;
         }
 
