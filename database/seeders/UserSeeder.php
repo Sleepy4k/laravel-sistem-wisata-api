@@ -14,6 +14,31 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         if (User::query()->withoutCache()->count() > 0) return;
+
+        User::create([
+            'name' => 'Pemdes',
+            'email' => 'pemdes@gmail.com',
+            'password' => 'password',
+        ])->assignRole('pemdes');
+
+        User::create([
+            'name' => 'Pokdarwis',
+            'email' => 'pokdarwis@gmail.com',
+            'password' => 'password',
+        ])->assignRole('pokdarwis');
+
+        User::create([
+            'name' => 'Bumdes',
+            'email' => 'bumdes@gmail.com',
+            'password' => 'password',
+        ])->assignRole('bumdes');
+
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'password' => 'password',
+        ])->assignRole('admin');
+
         if (!app()->environment('local')) return;
 
         User::factory()->count(10)->create()->each(function ($user) {

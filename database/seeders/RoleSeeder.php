@@ -49,6 +49,14 @@ class RoleSeeder extends Seeder
                 }
             }
 
+            if ($roleName === 'bumdes') {
+                foreach (config('rbac.list.dynamic_permissions.pokdarwis', []) as $action) {
+                    foreach ($crudPermissions as $ability) {
+                        $rolePermissions[] = "pokdarwis.{$action}.{$ability}";
+                    }
+                }
+            }
+
             Role::create($roleData)->syncPermissions($rolePermissions);
         }
     }
