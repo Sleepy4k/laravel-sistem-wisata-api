@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+use function PHPSTORM_META\map;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SidebarMeta>
  */
@@ -24,46 +26,42 @@ class SidebarMetaFactory extends Factory
             return collect($businessSlugs)->first(fn($item) => str_contains($name, $item->name))?->slug;
         };
 
+        $pokdarwisBusinesses = collect(config('rbac.list.dynamic_permissions.pokdarwis', []))->map(fn($item) => 'pokdarwis.' . $item . '.viewAny');
+        $bumdesBusinesses = collect(config('rbac.list.dynamic_permissions.bumdes', []))->map(fn($item) => 'bumdes.' . str_replace('-', '_', $item) . '.viewAny');
+
         $data = [
             [
                 'parameters'    => ['role' => 'pokdarwis'],
-                'permissions'   => [
-                    'pokdarwis.tourist_ticket.viewAny',
-                    'pokdarwis.river_tubing.viewAny',
-                    'pokdarwis.stall_rental.viewAny',
-                    'pokdarwis.umkm_rental.viewAny',
-                    'pokdarwis.fish_feed.viewAny',
-                    'manage.pokdarwis.business'
-                ],
+                'permissions'   => array_merge(['manage.pokdarwis.business'], $pokdarwisBusinesses->toArray()),
             ],
             [
                 'icon'          => 'ticket',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['pokdarwis.tourist_ticket.viewAny'],
+                'permissions'   => ['pokdarwis.tiket-wisata.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('Tiket Wisata') ?? 'tiket-wisata'],
             ],
             [
                 'icon'          => 'water',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['pokdarwis.river_tubing.viewAny'],
+                'permissions'   => ['pokdarwis.river-tubing.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('River Tubing') ?? 'river-tubing'],
             ],
             [
                 'icon'          => 'store',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['pokdarwis.stall_rental.viewAny'],
+                'permissions'   => ['pokdarwis.sewa-warung.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('Sewa Warung') ?? 'sewa-warung'],
             ],
             [
                 'icon'          => 'shopping-cart',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['pokdarwis.umkm_rental.viewAny'],
+                'permissions'   => ['pokdarwis.sewa-umkm.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('Sewa UMKM') ?? 'sewa-umkm'],
             ],
             [
                 'icon'          => 'fish',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['pokdarwis.fish_feed.viewAny'],
+                'permissions'   => ['pokdarwis.pakan-ikan.viewAny'],
                 'parameters'    => ['role' => 'pokdarwis', 'business' => $findSlug('Pakan Ikan') ?? 'pakan-ikan'],
             ],
             [
@@ -74,22 +72,18 @@ class SidebarMetaFactory extends Factory
             ],
             [
                 'parameters'    => ['role' => 'bumdes'],
-                'permissions'   => [
-                    'bumdes.restaurant_rental.viewAny',
-                    'bumdes.internet_rental.viewAny',
-                    'manage.bumdes.business'
-                ],
+                'permissions'   => array_merge(['manage.bumdes.business'], $bumdesBusinesses->toArray()),
             ],
             [
                 'icon'          => 'utensils',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['bumdes.rent_restaurant.viewAny'],
+                'permissions'   => ['bumdes.sewa-resto.viewAny'],
                 'parameters'    => ['role' => 'bumdes', 'business' => $findSlug('Sewa Resto') ?? 'sewa-resto'],
             ],
             [
                 'icon'          => 'wifi',
                 'route'         => 'dashboard.role.section.index',
-                'permissions'   => ['bumdes.rent_internet.viewAny'],
+                'permissions'   => ['bumdes.sewa-internet.viewAny'],
                 'parameters'    => ['role' => 'bumdes', 'business' => $findSlug('Sewa Internet') ?? 'sewa-internet'],
             ],
             [
