@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::any('/', RootController::class)->name('root');
 Route::get('/access-denied', Error\AccessDeniedController::class)->name('access.denied');
+Route::post('/check-session', Auth\SessionCheckController::class)->name('check.session');
 
 /*
 |--------------------------------------------------------------------------
