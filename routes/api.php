@@ -49,6 +49,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('/sidebar', Dashboard\SidebarController::class)->name('sidebar');
+        Route::get('/statistics', Dashboard\SummaryController::class)->name('statistics');
         Route::get('/system-information', Dashboard\SystemInformationController::class)->name('system.information');
 
         Route::controller(Dashboard\ProfileController::class)->group(function () {
