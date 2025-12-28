@@ -57,18 +57,25 @@ class SectionService extends Service
                         ->orWhere('amount', 'like', "%{$search}%")
                         ->orWhereRaw("detail LIKE ?", ["%{$search}%"]);
                 })
-                ->orWhereHas('user', function ($userQuery) use ($search) {
-                    $userQuery->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
             });
         }
 
         $totalFiltered = $query->count();
 
-        $column = !in_array($order, ['id', 'note', 'amount', 'created_at', 'updated_at']) ? 'detail' : $order;
-        $transactions = $query->orderBy($column, $direction)
-            ->skip($start)
+        if (in_array($order, ['note', 'amount'])) {
+            $query->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
+                ->select('transactions.*')
+                ->orderBy('transaction_details.' . $order, $direction);
+        } else {
+            $column = in_array($order, ['id', 'created_at', 'updated_at']) ? $order : 'id';
+            $query->orderBy($column, $direction);
+        }
+
+        $transactions = $query->skip($start)
             ->take($size)
             ->get();
 
