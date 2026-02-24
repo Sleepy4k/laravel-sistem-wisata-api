@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Api\Dashboard;
 use App\Http\Controllers\Api\Error;
@@ -52,10 +53,15 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/statistics', Dashboard\SummaryController::class)->name('statistics');
         Route::get('/system-information', Dashboard\SystemInformationController::class)->name('system.information');
 
-        Route::controller(Dashboard\ProfileController::class)->group(function () {
-            Route::get('/profile/detail', 'index')->name('profile.index');
-            Route::get('/profile', 'show')->name('profile.show');
-            Route::post('/profile', 'update')->name('profile.update');
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::apiResource('/users', Admin\UserManagementController::class)
+                ->parameters(['users' => 'user:id']);
+        });
+
+        Route::name('profile.')->controller(Dashboard\ProfileController::class)->group(function () {
+            Route::get('/profile/detail', 'index')->name('index');
+            Route::get('/profile', 'show')->name('show');
+            Route::post('/profile', 'update')->name('update');
         });
 
         Route::prefix('{role}')->name('role.')->group(function () {
@@ -64,10 +70,23 @@ Route::middleware('auth:api')->group(function () {
                 ->parameter('business', 'business:slug');
 
             Route::prefix('/{business:slug}')->name('section.')->group(function () {
-                Route::controller(Dashboard\SectionMiscController::class)->group(function () {
-                    Route::get('/columns', 'columns')->name('misc.columns');
-                    Route::get('/fields', 'fields')->name('misc.fields');
-                    Route::get('/cards', 'cards')->name('misc.cards');
+                Route::name('misc.')->controller(Dashboard\SectionMiscController::class)->group(function () {
+                    Route::get('/columns', 'columns')->name('columns');
+                    Route::get('/fields', 'fields')->name('fields');
+                    Route::get('/cards', 'cards')->name('cards');
+                });
+
+                Route::prefix('/export')->name('export.')->controller(Dashboard\ExportController::class)->group(function () {
+                    Route::get('/excel', 'excel')->name('excel');
+                    Route::get('/pdf', 'pdf')->name('pdf');
+                    Route::get('/print', 'print')->name('print');
+                });
+
+                Route::prefix('/formula')->name('formula.')->controller(Dashboard\BusinessFormulaController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::post('/', 'store')->name('store');
+                    Route::put('/{formula}', 'update')->name('update');
+                    Route::delete('/{formula}', 'destroy')->name('destroy');
                 });
 
                 Route::controller(Dashboard\SectionController::class)->group(function () {
