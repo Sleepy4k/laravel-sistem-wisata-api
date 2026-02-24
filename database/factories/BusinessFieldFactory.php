@@ -50,7 +50,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 3,
@@ -96,7 +99,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 3,
@@ -133,7 +139,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 2,
@@ -170,7 +179,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 2,
@@ -216,7 +228,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 3,
@@ -253,7 +268,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 2,
@@ -290,7 +308,10 @@ class BusinessFieldFactory extends Factory
                 'name' => 'type',
                 'label' => 'Jenis Uang',
                 'type' => FieldInputType::SELECT,
-                'options' => ['income', 'outcome'],
+                'options' => [
+                    ['value' => 'income', 'label' => 'Pemasukan'],
+                    ['value' => 'outcome', 'label' => 'Pengeluaran']
+                ],
                 'validation_rules' => ['required', 'string', 'in:income,outcome'],
                 'placeholder' => 'Masukkan jenis uang',
                 'order' => 2,
