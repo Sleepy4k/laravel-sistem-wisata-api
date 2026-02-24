@@ -65,4 +65,13 @@ class Business extends Model
         return $this->hasMany(BusinessField::class, 'business_id', 'id')
             ->orderBy('order', 'asc');
     }
+
+    /**
+     * Get the formulas for the business.
+     */
+    public function formulas()
+    {
+        return $this->hasMany(BusinessFormula::class, 'business_id', 'id')
+            ->orderBy('order', 'asc');
+    }
 }

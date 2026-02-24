@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Dashboard;
 
+use App\Enums\TransactionType;
 use App\Http\Resources\Profile\UserBasicResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,9 +21,8 @@ class BusinessTransactionResource extends JsonResource
 
         $result = [
             'id' => $this->id,
-            'type' => $this->type,
+            'type' => TransactionType::fromCase($this->type),
             'transaction_date' => $this->transaction_date,
-            'user' => new UserBasicResource($this->whenLoaded('user')),
             'created_at' => $this->created_at->format('d-m-Y H:i:s'),
             'updated_at' => $this->updated_at->format('d-m-Y H:i:s'),
         ];

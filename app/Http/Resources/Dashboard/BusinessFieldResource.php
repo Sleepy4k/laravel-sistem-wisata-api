@@ -22,6 +22,7 @@ class BusinessFieldResource extends JsonResource
             'placeholder' => $this->placeholder,
             'options' => $this->when($this->type === 'select', fn () => $this->options),
             'is_required' => $this->when($this->validation_rules !== null, fn () => in_array('required', $this->validation_rules)),
+            'filterable' => $this->when(in_array($this->type, ['select', 'date']), fn () => true, false),
         ];
     }
 }

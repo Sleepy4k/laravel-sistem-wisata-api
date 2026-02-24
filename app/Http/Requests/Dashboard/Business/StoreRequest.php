@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:30', Rule::unique(Business::class, 'name')],
-            'icon' => ['sometimes', 'string', 'max:15'],
+            'icon' => ['sometimes', 'string', 'max:50'],
             'is_active' => ['sometimes', 'boolean'],
             'fields' => ['required', 'array', 'min:2'],
             'fields.*.name' => ['required', 'string', 'max:100'],

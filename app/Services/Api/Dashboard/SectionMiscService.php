@@ -82,23 +82,33 @@ class SectionMiscService extends Service
         return [
             [
                 'name' => 'total-transactions',
+                'title' => 'Jumlah Transaksi',
                 'value' => $transactions->count(),
+                'is_currency' => false,
             ],
             [
                 'name' => 'transactions-this-month',
+                'title' => 'Transaksi Bulan Ini',
                 'value' => $currentMonthTransactions->count(),
+                'is_currency' => false,
             ],
             [
                 'name' => 'total-income',
+                'title' => 'Total Pemasukan',
                 'value' => $income,
+                'is_currency' => true,
             ],
             [
                 'name' => 'total-outcome',
+                'title' => 'Total Pengeluaran',
                 'value' => $outcome,
+                'is_currency' => true,
             ],
             [
                 'name' => 'net-balance',
+                'title' => 'Saldo Bersih',
                 'value' => $income - $outcome,
+                'is_currency' => true,
             ],
         ];
     }

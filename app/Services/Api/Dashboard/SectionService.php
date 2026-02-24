@@ -34,9 +34,9 @@ class SectionService extends Service
 
         $date_from = request()->input('date_from', null);
         $date_to = request()->input('date_to', null);
-        $type = request()->input('type', null);
+        $type = request()->input('filter_type', null);
 
-        $query = $business->transactions()->with('detail', 'user');
+        $query = $business->transactions()->with('detail');
 
         if ($date_from) {
             $query->whereDate('transaction_date', '>=', $date_from);
@@ -46,8 +46,28 @@ class SectionService extends Service
             $query->whereDate('transaction_date', '<=', $date_to);
         }
 
-        if ($type && in_array($type, [TransactionType::INCOME->value, TransactionType::EXPENSE->value])) {
-            $query->where('type', $type);
+        $filters = request()->except(['date_from', 'date_to', 'filter_type', 'search', 'length', 'start', 'order', 'columns', 'draw']);
+
+        foreach ($filters as $key => $value) {
+            if (!$value) {
+                continue;
+            }
+
+            $query->whereHas('detail', function ($detailQuery) use ($key, $value) {
+                if (is_array($value)) {
+                    $detailQuery->whereJsonContains("detail->{$key}", $value);
+                } else {
+                    $detailQuery->whereJsonPath("detail->{$key}", '=', $value);
+                }
+            });
+        }
+
+        $loweredType = $type ? strtolower($type) : null;
+        if ($type && in_array($loweredType, [TransactionType::INCOME->value, TransactionType::EXPENSE->value])) {
+            $query->where('type', $loweredType);
+        } else if ($type && TransactionType::fromLabel($loweredType)) {
+            $transactionType = TransactionType::fromLabel($loweredType);
+            $query->where('type', $transactionType->value);
         }
 
         if ($search) {

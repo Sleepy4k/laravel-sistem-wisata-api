@@ -31,10 +31,15 @@ class StoreRequest extends FormRequest
             switch ($field->type) {
             case 'select':
                 $options = is_array($field->options) ? $field->options : [];
-                if (is_array($rules[$field->name]) && !in_array('in:' . implode(',', $options), $rules[$field->name])) {
-                    $rules[$field->name][] = 'in:' . implode(',', $options);
+
+                $optionValues = array_map(function($option) {
+                    return is_array($option) && isset($option['value']) ? $option['value'] : $option;
+                }, $options);
+
+                if (is_array($rules[$field->name]) && !in_array('in:' . implode(',', $optionValues), $rules[$field->name])) {
+                    $rules[$field->name][] = 'in:' . implode(',', $optionValues);
                 } elseif (is_string($rules[$field->name]) && strpos($rules[$field->name], 'in:') === false) {
-                    $rules[$field->name] .= '|in:' . implode(',', $options);
+                    $rules[$field->name] .= '|in:' . implode(',', $optionValues);
                 }
                 break;
             default:
