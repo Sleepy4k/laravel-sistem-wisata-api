@@ -15,9 +15,9 @@ return new class extends Migration
         Schema::create('business_formulas', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignIdFor(Business::class)->constrained()->cascadeOnDelete();
-            $table->string('result_column', 100)->comment('Key name of the computed output column');
-            $table->string('result_label', 150)->comment('Human-readable label for the result column');
-            $table->json('expression')->comment('Ordered token list: [{type: field|operator|literal, value: ...}]');
+            $table->string('result_column', 100);
+            $table->string('result_label', 150);
+            $table->json('expression');
             $table->integer('order')->default(0);
             $table->timestamps();
         });

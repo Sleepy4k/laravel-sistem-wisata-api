@@ -9,13 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('business_formulas', function (Blueprint $table) {
-            // Remove old expression JSON column
             $table->dropColumn('expression');
-
-            // Rename result_column -> result
             $table->renameColumn('result_column', 'result');
-
-            // Add flat formula columns
             $table->string('field_a', 100)->after('result_label');
             $table->string('operator', 10)->after('field_a');
             $table->string('field_b', 100)->after('operator');
