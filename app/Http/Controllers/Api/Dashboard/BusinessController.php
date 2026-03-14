@@ -22,6 +22,7 @@ class BusinessController extends Controller
         private $policy = ManageBusinessPolicy::class,
         private $abilities = [
             'store' => 'store',
+            'show' => 'view',
             'update' => 'update',
             'destroy' => 'delete',
         ]
@@ -33,6 +34,14 @@ class BusinessController extends Controller
     public function store(string $role, StoreRequest $request)
     {
         return $this->service->store($role, $request->validated());
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $role, Business $business)
+    {
+        return $this->service->show($role, $business);
     }
 
     /**

@@ -8,6 +8,8 @@ use App\Foundations\Service;
 use App\Http\Resources\Dashboard\BusinessFormulaResource;
 use App\Models\Business;
 use App\Models\BusinessFormula;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class BusinessFormulaService extends Service
 {
@@ -35,66 +37,61 @@ class BusinessFormulaService extends Service
     }
 
     /**
-     * Create a new formula for the business.
-     */
-    public function store(string $role, Business $business, array $data): mixed
-    {
-        $nextOrder = $business->formulas()->max('order') + 1;
-
-        $created = collect($data['formulas'])->map(function (array $item, int $i) use ($business, &$nextOrder) {
-            $this->validateFields($business, $item['field_a'], $item['field_b']);
-
-            $formula = BusinessFormula::create([
-                'business_id'  => $business->id,
-                'result'       => $item['result'],
-                'result_label' => $item['result_label'],
-                'field_a'      => $item['field_a'],
-                'operator'     => $item['operator'],
-                'field_b'      => $item['field_b'],
-                'order'        => $item['order'] ?? $nextOrder++,
-            ]);
-
-            return new BusinessFormulaResource($formula);
-        })->values();
-
-        return ApiResponse::success($created, 'Formula(s) created successfully.', 201);
-    }
-
-    /**
      * Update an existing formula.
      */
-    public function update(string $role, Business $business, BusinessFormula $formula, array $data): mixed
+    public function update(string $role, Business $business, array $data): mixed
     {
-        if (isset($data['field_a']) || isset($data['field_b'])) {
-            $this->validateFields(
-                $business,
-                $data['field_a'] ?? $formula->field_a,
-                $data['field_b'] ?? $formula->field_b,
-            );
+        try {
+            return DB::transaction(function () use ($business, $data) {
+                $items = collect($data['formulas'] ?? [])->values();
+
+                $existingFormulas = $business->formulas()->get()->keyBy('id');
+                $incomingIds = $items->pluck('id')->filter()->map(fn($id) => (int) $id)->values();
+
+                if ($incomingIds->isNotEmpty()) {
+                    $business->formulas()->whereNotIn('id', $incomingIds)->delete();
+                } else {
+                    $business->formulas()->delete();
+                }
+
+                foreach ($items as $index => $item) {
+                    $this->validateFields($business, $item['field_a'], $item['field_b']);
+
+                    $payload = [
+                        'business_id'  => $business->id,
+                        'result'       => $item['result'],
+                        'result_label' => $item['result_label'],
+                        'field_a'      => $item['field_a'],
+                        'operator'     => $item['operator'],
+                        'field_b'      => $item['field_b'],
+                        'order'        => $item['order'] ?? ($index + 1),
+                    ];
+
+                    if (!empty($item['id'])) {
+                        $formulaToUpdate = $existingFormulas->get((int) $item['id']);
+
+                        if (!$formulaToUpdate) {
+                            throw ValidationException::withMessages([
+                                'id' => ["Formula id '{$item['id']}' does not exist in business '{$business->slug}'."],
+                            ]);
+                        }
+
+                        $formulaToUpdate->update($payload);
+                    } else {
+                        BusinessFormula::create($payload);
+                    }
+                }
+
+                $formulas = $business->formulas()->orderBy('order')->get();
+
+                return ApiResponse::success(
+                    BusinessFormulaResource::collection($formulas),
+                    'Formulas synced successfully.'
+                );
+            });
+        } catch (\Throwable $th) {
+            return ApiResponse::error("Something went wrong", 500, 'Failed to update formulas: ' . $th->getMessage());
         }
-
-        $formula->fill(array_filter([
-            'result'       => $data['result']       ?? null,
-            'result_label' => $data['result_label'] ?? null,
-            'field_a'      => $data['field_a']      ?? null,
-            'operator'     => $data['operator']     ?? null,
-            'field_b'      => $data['field_b']      ?? null,
-            'order'        => $data['order']        ?? null,
-        ], fn($v) => !is_null($v)));
-
-        $formula->save();
-
-        return ApiResponse::success(new BusinessFormulaResource($formula), 'Formula updated successfully.');
-    }
-
-    /**
-     * Delete a formula.
-     */
-    public function destroy(string $role, Business $business, BusinessFormula $formula): mixed
-    {
-        $formula->delete();
-
-        return ApiResponse::success(null, 'Formula deleted successfully.');
     }
 
     /**
@@ -108,13 +105,13 @@ class BusinessFormulaService extends Service
         $validFieldNames = $business->fields->pluck('name')->toArray();
 
         if (!in_array($fieldA, $validFieldNames, true)) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'field_a' => ["Field '{$fieldA}' does not exist in business '{$business->slug}'."],
             ]);
         }
 
         if (!in_array($fieldB, $validFieldNames, true)) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'field_b' => ["Field '{$fieldB}' does not exist in business '{$business->slug}'."],
             ]);
         }
