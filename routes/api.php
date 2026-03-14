@@ -58,15 +58,15 @@ Route::middleware('auth:api')->group(function () {
                 ->parameters(['users' => 'user:id']);
         });
 
-        Route::name('profile.')->controller(Dashboard\ProfileController::class)->group(function () {
-            Route::get('/profile/detail', 'index')->name('index');
-            Route::get('/profile', 'show')->name('show');
-            Route::post('/profile', 'update')->name('update');
+        Route::prefix('/profile')->name('profile.')->controller(Dashboard\ProfileController::class)->group(function () {
+            Route::get('/detail', 'index')->name('index');
+            Route::get('/', 'show')->name('show');
+            Route::post('/', 'update')->name('update');
         });
 
         Route::prefix('{role}')->name('role.')->group(function () {
             Route::resource('/business', Dashboard\BusinessController::class)
-                ->only(['store', 'update', 'destroy'])
+                ->only(['store', 'show', 'update', 'destroy'])
                 ->parameter('business', 'business:slug');
 
             Route::prefix('/{business:slug}')->name('section.')->group(function () {
@@ -84,9 +84,7 @@ Route::middleware('auth:api')->group(function () {
 
                 Route::prefix('/formula')->name('formula.')->controller(Dashboard\BusinessFormulaController::class)->group(function () {
                     Route::get('/', 'index')->name('index');
-                    Route::post('/', 'store')->name('store');
-                    Route::put('/{formula}', 'update')->name('update');
-                    Route::delete('/{formula}', 'destroy')->name('destroy');
+                    Route::post('/', 'update')->name('update');
                 });
 
                 Route::controller(Dashboard\SectionController::class)->group(function () {
