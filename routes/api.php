@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Api\Dashboard;
 use App\Http\Controllers\Api\Error;
+use App\Http\Controllers\Api\IoT;
 use App\Http\Controllers\Api\RootController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,11 @@ use Illuminate\Support\Facades\Route;
 Route::any('/', RootController::class)->name('root');
 Route::get('/access-denied', Error\AccessDeniedController::class)->name('access.denied');
 Route::post('/check-session', Auth\SessionCheckController::class)->name('check.session');
+
+Route::prefix('/iot')->name('iot.')->group(function () {
+    Route::resource('/device', IoT\DeviceController::class)
+        ->only(['index', 'store']);
+});
 
 /*
 |--------------------------------------------------------------------------
