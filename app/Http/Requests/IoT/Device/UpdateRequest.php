@@ -22,6 +22,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'ph'                   => ['required', 'numeric', 'min:0', 'max:14'],
             'oxygen_concentration' => ['required', 'numeric', 'min:0'],
             'oxygen_saturation'    => ['required', 'numeric', 'min:0', 'max:100'],
             'temperature'          => ['required', 'numeric', 'min:0'],

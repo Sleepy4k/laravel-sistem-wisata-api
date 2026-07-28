@@ -41,9 +41,9 @@ class DeviceController extends Controller
     /**
      * Display the specified device.
      */
-    public function show(IoT $iot)
+    public function show(IoT $device)
     {
-        return $this->service->show($iot);
+        return ApiResponse::success($this->service->show($device), 'Successfully retrieved device data.', 200);
     }
 
     /**
@@ -61,16 +61,16 @@ class DeviceController extends Controller
     /**
      * Update the specified device.
      */
-    public function update(IoT $iot, UpdateRequest $request)
+    public function update(IoT $device, UpdateRequest $request)
     {
-        return $this->service->update($iot, $request->validated());
+        return ApiResponse::success($this->service->update($device, $request->validated()), 'Successfully updated device data.', 200);
     }
 
     /**
      * Remove the specified device.
      */
-    public function destroy(IoT $iot)
+    public function destroy(IoT $device)
     {
-        return $this->service->destroy($iot);
+        return ApiResponse::success($this->service->destroy($device), 'Successfully deleted device data.', 200);
     }
 }

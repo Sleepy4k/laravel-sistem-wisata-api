@@ -25,7 +25,15 @@ class DeviceService extends Service
      */
     public function show(IoT $iot): mixed
     {
-        return $iot;
+        return [
+            'id' => $iot->id,
+            'distance' => $iot->distance,
+            'ph' => $iot->ph,
+            'oxygen_concentration' => $iot->oxygen_concentration,
+            'oxygen_saturation' => $iot->oxygen_saturation,
+            'temperature' => $iot->temperature,
+            'created_at' => $iot->created_at,
+        ];
     }
 
     /**
