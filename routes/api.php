@@ -23,8 +23,11 @@ Route::get('/access-denied', Error\AccessDeniedController::class)->name('access.
 Route::post('/check-session', Auth\SessionCheckController::class)->name('check.session');
 
 Route::prefix('/iot')->name('iot.')->group(function () {
+    Route::resource('/device/data', IoT\DeviceDataController::class)
+        ->only(['getDistance', 'getTemperature', 'getOxygenConcentration', 'getOxygenSaturation']);
+
     Route::resource('/device', IoT\DeviceController::class)
-        ->only(['index', 'store']);
+        ->only(['index', 'store', 'show', 'update', 'destroy']);
 });
 
 /*
