@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\IoT;
 
+use App\Models\IoT;
 use App\Facades\ApiResponse;
 use App\Foundations\Controller;
 use App\Http\Requests\IoT\Device\StoreRequest;
+use App\Http\Requests\IoT\Device\UpdateRequest;
 use App\Policies\DevicePolicy;
 use App\Services\Api\IoT\DeviceService;
 use App\Traits\Authorizable;
@@ -21,7 +23,10 @@ class DeviceController extends Controller
         private $policy = DevicePolicy::class,
         private $abilities = [
             'index' => 'viewAny',
+            'show' => 'view',
             'store' => 'store',
+            'update' => 'update',
+            'destroy' => 'delete',
         ]
     ) {}
 
@@ -34,6 +39,14 @@ class DeviceController extends Controller
     }
 
     /**
+     * Display the specified device.
+     */
+    public function show(IoT $iot)
+    {
+        return $this->service->show($iot);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreRequest $request)
@@ -43,5 +56,21 @@ class DeviceController extends Controller
         }
 
         return ApiResponse::error('Failed to store device data.', 422);
+    }
+
+    /**
+     * Update the specified device.
+     */
+    public function update(IoT $iot, UpdateRequest $request)
+    {
+        return $this->service->update($iot, $request->validated());
+    }
+
+    /**
+     * Remove the specified device.
+     */
+    public function destroy(IoT $iot)
+    {
+        return $this->service->destroy($iot);
     }
 }

@@ -21,6 +21,14 @@ class DeviceService extends Service
     }
 
     /**
+     * Display the specified device.
+     */
+    public function show(IoT $iot): mixed
+    {
+        return $iot;
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(array $request): bool
@@ -34,5 +42,23 @@ class DeviceService extends Service
         ]);
 
         return $device ? true : false;
+    }
+
+    /**
+     * Update the specified device.
+     */
+    public function update(IoT $iot, array $request): mixed
+    {
+        $iot->query()->update($request);
+
+        return $iot;
+    }
+
+    /**
+     * Remove the specified device.
+     */
+    public function destroy(IoT $iot): bool
+    {
+        return $iot->query()->delete() ? true : false;
     }
 }
